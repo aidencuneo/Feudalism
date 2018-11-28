@@ -78,41 +78,41 @@ class Peasant: # INCOMPLETE SECTION
 	def __init__(self):
 		money = 10
 		food = 10
-		rye: 0
-		wheat: 0
-		corn: 0
-		grain: 0
-		cornflour: 0
-		milk: 0
-		beef: 0
-		flour': 0
-		yeast': 0
+		rye = 0
+		wheat = 0
+		corn = 0
+		grain = 0
+		cornflour = 0
+		milk = 0
+		beef = 0
+		flour = 0
+		yeast = 0
 
-		family': 1
-		cows': 2
+		family = 1
+		cows = 2
 
-		MAXFAMILY': 3
-		MAXCOWS': 14
-		MAXMONEY': 100
-		MAXFOOD': 100
-		MAXCROPS': 10
+		MAXFAMILY = 3
+		MAXCOWS = 14
+		MAXMONEY = 100
+		MAXFOOD = 100
+		MAXCROPS = 10
 
-		crops': 0
-		current_crop_type': None
+		crops = 0
+		current_crop_type = None
 
-		corn_price': 3
-		wheat_price': 2
-		rye_price': 1
-		corn_time': 4
-		wheat_time': 3
-		rye_time': 2
+		corn_price = 3
+		wheat_price = 2
+		rye_price = 1
+		corn_time = 4
+		wheat_time = 3
+		rye_time = 2
 
-		plant_crops_var': 1
-		cook_food_var': 0
+		plant_crops_var = 1
+		cook_food_var = 0
 
-		mill_var': 0
-		mill_var2': 0
-		mill_var3': 0
+		mill_var = 0
+		mill_var2 = 0
+		mill_var3 = 0
 
 
 
