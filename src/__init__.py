@@ -1,18 +1,12 @@
-from time import sleep
-import platform
-import random
-import os
-import sys
-import contextlib
+import contextlib, os, random, sys, time
 
 if sys.version_info[0] < 3:
 	import urllib2
-if sys.version_info[0] >= 3:
+else:
 	import urllib.request
-OS = platform.platform()
-if OS.startswith("Windows"):
+if os.name == 'nt':
 	import msvcrt
-if OS.startswith("Darwin"):
+else:
 	import termios
 
 ##
@@ -46,56 +40,12 @@ king = {
 # Knight variables:
 
 # Peasant variables:
-peasant = {
-	'money': 10,
-	'food': 10,
-	'rye': 0,
-	'wheat': 0,
-	'corn': 0,
-	'grain': 0,
-	'cornflour': 0,
-	'milk': 0,
-	'beef': 0,
-	'flour': 0,
-	'yeast': 0,
 
-	'family': 1,
-	'cows': 2,
-
-	'MAXFAMILY': 3,
-	'MAXCOWS': 14,
-	'MAXMONEY': 100,
-	'MAXFOOD': 100,
-	'MAXCROPS': 10,
-
-	'crops': 0,
-	'current_crop_type': None,
-
-	'corn_price': 3,
-	'wheat_price': 2,
-	'rye_price': 1,
-	'corn_time': 4,
-	'wheat_time': 3,
-	'rye_time': 2,
-
-	'plant_crops_var': 1,
-	'cook_food_var': 0,
-
-	'mill_var': 0,
-	'mill_var2': 0,
-	'mill_var3': 0,
-}
-
-__version__ = "0.2.7a"
+__version__ = '0.2.8a'
 dayCount = 1
-user = "peasant"
+user = 'peasant'
 
-raidEnemyVar = 0
-enemyTownNameSite = "https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61767&view=co"
-fullEnemyTownName = ""
-enemyTownName1 = ""
-enemyTownName2 = ""
-enemyTownName3 = ""
+# THIS WEBSITE CONTAINS A LIST OF ALL PRONOUNS: 'https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61767&view=co'
 
 lines = ['', '', '', '', '', '', '', '']
 
@@ -124,7 +74,49 @@ def kbfunc():
 	    return ret
 
 
-class Key(object):
+class Peasant: # INCOMPLETE SECTION
+	def __init__(self):
+		money = 10
+		food = 10
+		rye: 0
+		wheat: 0
+		corn: 0
+		grain: 0
+		cornflour: 0
+		milk: 0
+		beef: 0
+		flour': 0
+		yeast': 0
+
+		family': 1
+		cows': 2
+
+		MAXFAMILY': 3
+		MAXCOWS': 14
+		MAXMONEY': 100
+		MAXFOOD': 100
+		MAXCROPS': 10
+
+		crops': 0
+		current_crop_type': None
+
+		corn_price': 3
+		wheat_price': 2
+		rye_price': 1
+		corn_time': 4
+		wheat_time': 3
+		rye_time': 2
+
+		plant_crops_var': 1
+		cook_food_var': 0
+
+		mill_var': 0
+		mill_var2': 0
+		mill_var3': 0
+
+
+
+class Key:
 
 	def get_key(self):
 		global OS
@@ -160,14 +152,15 @@ class Key(object):
 		print(ch)
 
 
-class KeyListener(object):
+class KeyListener:
 
 	def __init__(self, actions):
 		self.actions = actions
 
 	def listen(self, key):
 		if key in self.actions:
-			self.actions[key]() if self.actions[key] != '': else pass
+			if self.actions[key] != '':
+				self.actions[key]()
 
 
 mainKeyListen = KeyListener({
@@ -179,249 +172,6 @@ mainKeyListen = KeyListener({
 	'z': raidEnemyStart,
 })
 
-def raidEnemyKeyListen():
-	global OS
-	global ch
-	global raidEnemyVar
-	if OS.startswith("Darwin"):
-	    with raw_mode(sys.stdin):
-	        try:
-	            while True:
-	                ch = sys.stdin.read(1)
-	                if  ch == "\r":
-	                	break
-	                if  ch == "1":
-	                	raidEnemyVar = 1
-	                	break
-	                if  ch == "2":
-	                	raidEnemyVar = 2
-	                	break
-	                if  ch == "3":
-	                	raidEnemyVar = 3
-	                	break
-	        except (KeyboardInterrupt, EOFError):
-	            pass
-	if OS.startswith("Windows"):
-		while True:
-			ch = kbfunc()
-			if ch != False:
-				if ch.decode() == "\r":
-					break
-				if ch.decode() == "1":
-					raidEnemyVar = 1
-					break
-				if ch.decode() == "2":
-					raidEnemyVar = 2
-					break
-				if ch.decode() == "3":
-					raidEnemyVar = 3
-					break
-
-def pKeyListen(ch):
-	global OS
-	if OS.startswith("Darwin"):
-		with raw_mode(sys.stdin):
-			try:
-				while True:
-					if ch == "\r":
-					    break
-					if ch == "m":
-						market()
-					if ord(ch) == 113:
-						upgrade()
-						break
-					if ch == "m":
-						mill()
-					if ch == "1":
-						addFamilyMember()
-						break
-					if ch == "2":
-						plantCrops()
-						break
-					if ch == "3":
-						harvestCrops()
-						break
-					if ord(ch) == 98:
-						tradeFoodOrMoney()
-					if ord(ch) == 99:
-						cookFood()
-					if ord(ch) == 112:
-						cowMenu()
-						break
-					if ch == "h":
-						displayHelp()
-					if ord(ch) == 27:
-						sys.exit() 
-			except (KeyboardInterrupt, EOFError):
-				pass
-	if OS.startswith("Windows"):
-		while True:
-			if ch != False:
-				if ch.decode() == "\r":
-					break
-				if ch.decode() == "g":
-					market()
-				if ch.decode() == "q":
-					upgrade()
-					break
-				if ch.decode() == "m":
-					mill()
-				if ch.decode() == "1":
-					addFamilyMember()
-					break
-				if ch.decode() == "2":
-					plantCrops()
-					break
-				if ch.decode() == "3":
-					harvestCrops()
-					break
-				if ch.decode() == "b":
-					tradeFoodOrMoney()
-				if ch.decode() == "c":
-					cookFood()
-				if ch.decode() == "p":
-					cowMenu()
-					break
-				if ch.decode() == "h":
-					displayHelp()
-				if ch == chr(27).encode():
-					sys.exit()
-
-def plantCropsKeyListen():
-	global OS
-	global ch
-	global plantCropsVar
-	if OS.startswith("Darwin"):
-	    with raw_mode(sys.stdin):
-	        try:
-	            while True:
-	                ch = sys.stdin.read(1)
-	                if ch == "\r":
-	                	break
-	                if ch == "1":
-	                	plantCropsVar = 1
-	                	break
-	                if ch == "2":
-	                	plantCropsVar = 2
-	                	break
-	                if ch == "3":
-	                	plantCropsVar = 3
-	                	break
-	                if ord(ch) == 27:
-	                	sys.exit()
-	        except (KeyboardInterrupt, EOFError):
-	            pass
-	if OS.startswith("Windows"):
-		while True:
-			ch = kbfunc()
-			if ch != False:
-				if ch.decode() == "\r":
-					break
-				if ch.decode() == "1":
-					plantCropsVar = 1
-					break
-				if ch.decode() == "2":
-					plantCropsVar = 2
-					break
-				if ch.decode() == "3":
-					plantCropsVar = 3
-					break
-				if ch == chr(27).encode():
-					sys.exit()
-
-def pCookFoodKeyListen():
-	global OS
-	global ch
-	global cookFoodVar
-	if OS.startswith("Darwin"):
-	    with raw_mode(sys.stdin):
-	        try:
-	            while True:
-	                ch = sys.stdin.read(1)
-	                if ch == "\r":
-	                	break
-	                if ch == "1":
-	                	cookFoodVar = 1
-	                	break
-	                if ch == "2":
-	                	cookFoodVar = 2
-	                	break
-	                if ch == "3":
-	                	cookFoodVar = 3
-	                	break
-	                if ch == "4":
-	                	cookFoodVar = 4
-	                	break
-	                if ord(ch) == 27:
-	                	sys.exit()
-	        except (KeyboardInterrupt, EOFError):
-	            pass
-	if OS.startswith("Windows"):
-		while True:
-			ch = kbfunc()
-			if ch != False:
-				if ch.decode() == "\r":
-					break
-				if ch.decode() == "1":
-					cookFoodVar = 1
-					break
-				if ch.decode() == "2":
-					cookFoodVar = 2
-					break
-				if ch.decode() == "3":
-					cookFoodVar = 3
-					break
-				if ch.decode() == "4":
-					cookFoodVar = 4
-					break
-				if ch == chr(27).encode():
-					sys.exit()
-
-def pMillKeyListen():
-	global OS
-	global ch
-	global millVar
-	if OS.startswith("Darwin"):
-	    with raw_mode(sys.stdin):
-	        try:
-	            while True:
-	                ch = sys.stdin.read(1)
-	                if ch == "1":
-	                	millVar = 1
-	                	break
-	                if ch == "2":
-	                	millVar = 2
-	                	break
-	                if ch == "3":
-	                	millVar = 3
-	                	break
-	                if ch == "4":
-	                	millVar = 4
-	                	break
-	                if ord(ch) == 27:
-	                	sys.exit()
-	        except (KeyboardInterrupt, EOFError):
-	            pass
-	if OS.startswith("Windows"):
-		while True:
-			ch = kbfunc()
-			if ch != False:
-				if ch.decode() == "\r":
-					break
-				if ch.decode() == "1":
-					millVar = 1
-					break
-				if ch.decode() == "2":
-					millVar = 2
-					break
-				if ch.decode() == "3":
-					millVar = 3
-					break
-				if ch.decode() == "4":
-					millVar = 4
-					break
-				if ch == chr(27).encode():
-					sys.exit()
 
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
@@ -1253,12 +1003,13 @@ def mill():
 			printPeasantMenu()
 
 cls()
-print("Version: " + __version__)
-print("Game created by Aiden Blishen Cuneo.")
-print("Continue in 5 seconds.")
-sleep(5)
+print('Version: ' + __version__)
+print('Game created by Aiden Blishen Cuneo.')
+print('Continue in 5 seconds.')
+time.sleep(5)
 cls()
-print("")
+print('')
+
 
 def printPeasantMenu():
 	cls()
@@ -1280,8 +1031,8 @@ def printPeasantMenu():
 
 input = Key()
 
-def main():
 
+def main():
 	global OS
 	global money
 	global pmoney
@@ -1362,17 +1113,14 @@ def main():
 		print("")
 
 	if user == "noble":
-
 		print("You can not be a noble yet.")
 		sys.exit()
 	
 	if user == "knight":
-
 		print("You can not be a knight yet.")
 		sys.exit()
 
 	if user == "peasant":
-
 		if dayCount % 7 == 0:
 			pmoney -= pfamily * 4
 
@@ -1411,14 +1159,14 @@ def main():
 		newMoney = pmoney - currentMoney
 		newFood = pfood - currentFood
 
-		print("")
-		print("Daily gains and losses: Money " + str(newMoney) + ", Food " + str(newFood))
+		print('')
+		print('Daily gains and losses: Money ' + str(newMoney) + ', Food ' + str(newFood))
 
 		input.pause()
 
 		dayCount += 1
 		cls()
-		print("")
+		print('')
 
 while True:
 	main()
